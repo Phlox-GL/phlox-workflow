@@ -59,6 +59,8 @@
           "\"shortid" :as shortid
           app.updater :refer $ updater
           "\"fontfaceobserver-es" :as FontFaceObserver
+          "\"./calcit.build-errors" :default build-errors
+          "\"bottom-tip" :default hud!
       :defs $ {}
         |render-app! $ quote
           defn render-app! (? arg)
@@ -81,9 +83,12 @@
                 op-time $ js/Date.now
               reset! *store $ updater @*store op op-data op-id op-time
         |reload! $ quote
-          defn reload! () (println "\"Code updated.") (clear-phlox-caches!) (remove-watch *store :change)
-            add-watch *store :change $ fn (store prev) (render-app!)
-            render-app! true
+          defn reload! () $ if (nil? build-errors)
+            do (println "\"Code updated.") (clear-phlox-caches!) (remove-watch *store :change)
+              add-watch *store :change $ fn (store prev) (render-app!)
+              render-app!
+              hud! "\"ok~" "\"Ok"
+            hud! "\"error" build-errors
     |app.config $ {}
       :ns $ quote (ns app.config)
       :defs $ {}
