@@ -1,8 +1,9 @@
 
 {} (:package |app)
   :configs $ {} (:init-fn |app.main/main!) (:reload-fn |app.main/reload!)
-    :modules $ [] |memof/ |lilac/ |respo.calcit/ |respo-ui.calcit/ |phlox.calcit/
+    :modules $ [] |memof/ |lilac/ |respo.calcit/ |respo-ui.calcit/ |phlox/
     :version |0.4.10
+  :entries $ {}
   :files $ {}
     |app.comp.container $ {}
       :ns $ quote
