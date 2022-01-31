@@ -1,9 +1,8 @@
 
 {}
-  :configs $ {} (:reload-fn |app.main/reload!) (:port 6001) (:output |src) (:compact-output? true) (:storage-key |calcit.cirru) (:version |0.4.10)
-    :modules $ [] |memof/ |lilac/ |respo.calcit/ |respo-ui.calcit/ |phlox/
-    :init-fn |app.main/main!
-    :extension |.cljs
+  :users $ {}
+    |root $ {} (:avatar nil) (:name |root) (:nickname |root) (:id |root) (:theme :star-trail) (:password |d41d8cd98f00b204e9800998ecf8427e)
+    |rJG4IHzWf $ {} (:avatar nil) (:name |chen) (:nickname |chen) (:id |rJG4IHzWf) (:theme :star-trail) (:password |d41d8cd98f00b204e9800998ecf8427e)
   :ir $ {} (:package |app)
     :files $ {}
       |app.comp.container $ {}
@@ -189,14 +188,6 @@
                       :by |rJG4IHzWf
                   :type :expr
                   :at 1583040803587
-                  :by |rJG4IHzWf
-                |yy $ {}
-                  :data $ {}
-                    |j $ {} (:text "|\"shortid") (:type :leaf) (:at 1586601779518) (:by |rJG4IHzWf)
-                    |r $ {} (:text |:as) (:type :leaf) (:at 1586601780086) (:by |rJG4IHzWf)
-                    |v $ {} (:text |shortid) (:type :leaf) (:at 1586601781086) (:by |rJG4IHzWf)
-                  :type :expr
-                  :at 1586601776776
                   :by |rJG4IHzWf
                 |T $ {} (:text |:require) (:type :leaf) (:at 1573356351680) (:by |rJG4IHzWf)
                 |j $ {}
@@ -712,7 +703,7 @@
                           |T $ {} (:text |op-id) (:type :leaf) (:at 1583036785574) (:by |rJG4IHzWf)
                           |j $ {}
                             :data $ {}
-                              |T $ {} (:text |shortid/generate) (:type :leaf) (:at 1583036785574) (:by |rJG4IHzWf)
+                              |T $ {} (:text |nanoid) (:type :leaf) (:at 1643606538079) (:by |rJG4IHzWf)
                             :type :expr
                             :at 1583036785574
                             :by |rJG4IHzWf
@@ -872,9 +863,11 @@
               :data $ {}
                 |yT $ {}
                   :data $ {}
-                    |j $ {} (:text "|\"shortid") (:type :leaf) (:at 1580869191409) (:by |rJG4IHzWf)
-                    |r $ {} (:text |:as) (:type :leaf) (:at 1580869192078) (:by |rJG4IHzWf)
-                    |v $ {} (:text |shortid) (:type :leaf) (:at 1580869195036) (:by |rJG4IHzWf)
+                    |j $ {} (:text "|\"nanoid") (:type :leaf) (:at 1643606542981) (:by |rJG4IHzWf)
+                    |r $ {} (:text |:refer) (:type :leaf) (:at 1643606544523) (:by |rJG4IHzWf)
+                    |v $ {} (:type :expr) (:by |rJG4IHzWf) (:at 1643606547824)
+                      :data $ {}
+                        |T $ {} (:text |nanoid) (:type :leaf) (:at 1643606547106) (:by |rJG4IHzWf)
                   :type :expr
                   :at 1580869187547
                   :by |rJG4IHzWf
@@ -1068,6 +1061,8 @@
           :type :expr
           :at 1527788237503
           :by |root
-  :users $ {}
-    |root $ {} (:avatar nil) (:name |root) (:nickname |root) (:id |root) (:theme :star-trail) (:password |d41d8cd98f00b204e9800998ecf8427e)
-    |rJG4IHzWf $ {} (:avatar nil) (:name |chen) (:nickname |chen) (:id |rJG4IHzWf) (:theme :star-trail) (:password |d41d8cd98f00b204e9800998ecf8427e)
+  :configs $ {} (:reload-fn |app.main/reload!) (:port 6001) (:output |src) (:compact-output? true) (:storage-key |calcit.cirru) (:version |0.4.10)
+    :modules $ [] |memof/ |lilac/ |respo.calcit/ |respo-ui.calcit/ |phlox/
+    :init-fn |app.main/main!
+    :extension |.cljs
+  :entries $ {}
