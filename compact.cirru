@@ -11,7 +11,6 @@
           phlox.core :refer $ g hslx rect circle text container graphics create-list >>
           phlox.comp.button :refer $ comp-button
           phlox.comp.drag-point :refer $ comp-drag-point
-          "\"shortid" :as shortid
           respo-ui.core :as ui
           memof.alias :refer $ memof-call
       :defs $ {}
@@ -57,7 +56,7 @@
           app.comp.container :refer $ comp-container
           app.schema :as schema
           app.config :refer $ dev?
-          "\"shortid" :as shortid
+          "\"nanoid" :refer $ nanoid
           app.updater :refer $ updater
           "\"fontfaceobserver-es" :as FontFaceObserver
           "\"./calcit.build-errors" :default build-errors
@@ -80,7 +79,7 @@
               and dev? $ not= op :states
               println "\"dispatch!" op op-data
             let
-                op-id $ shortid/generate
+                op-id $ nanoid
                 op-time $ js/Date.now
               reset! *store $ updater @*store op op-data op-id op-time
         |reload! $ quote
