@@ -1,7 +1,7 @@
 
 {} (:package |app)
   :configs $ {} (:init-fn |app.main/main!) (:reload-fn |app.main/reload!)
-    :modules $ [] |memof/ |lilac/ |respo.calcit/ |respo-ui.calcit/ |phlox/
+    :modules $ [] |memof/ |lilac/ |respo.calcit/ |respo-ui.calcit/ |phlox/ |touch-control/
     :version |0.4.10
   :entries $ {}
   :files $ {}
@@ -52,15 +52,16 @@
     |app.main $ {}
       :ns $ quote
         ns app.main $ :require ("\"pixi.js" :as PIXI)
-          phlox.core :refer $ render! clear-phlox-caches!
+          phlox.core :refer $ render! clear-phlox-caches! update-viewer!
           app.comp.container :refer $ comp-container
           app.schema :as schema
-          app.config :refer $ dev?
+          app.config :refer $ dev? mobile?
           "\"nanoid" :refer $ nanoid
           app.updater :refer $ updater
           "\"fontfaceobserver-es" :as FontFaceObserver
           "\"./calcit.build-errors" :default build-errors
           "\"bottom-tip" :default hud!
+          touch-control.core :refer $ render-control! start-control-loop! replace-control-loop!
       :defs $ {}
         |render-app! $ quote
           defn render-app! (? arg)
@@ -71,6 +72,7 @@
             -> (new FontFaceObserver/default "\"Josefin Sans") (.!load)
               .!then $ fn (event) (render-app!)
             add-watch *store :change $ fn (store prev) (render-app!)
+            when mobile? (render-control!) (start-control-loop! 8 on-control-event)
             println "\"App Started"
         |*store $ quote (defatom *store schema/store)
         |dispatch! $ quote
@@ -84,15 +86,25 @@
               reset! *store $ updater @*store op op-data op-id op-time
         |reload! $ quote
           defn reload! () $ if (nil? build-errors)
-            do (println "\"Code updated.") (clear-phlox-caches!) (remove-watch *store :change)
+            do (clear-phlox-caches!) (remove-watch *store :change)
               add-watch *store :change $ fn (store prev) (render-app!)
               render-app!
+              when mobile? (replace-control-loop! 8 on-control-event) (render-control!)
               hud! "\"ok~" "\"Ok"
             hud! "\"error" build-errors
+        |on-control-event $ quote
+          defn on-control-event (elapsed states delta)
+            let
+                move $ :left-move states
+                scales $ :right-move delta
+              update-viewer! move $ nth scales 1
     |app.config $ {}
-      :ns $ quote (ns app.config)
+      :ns $ quote
+        ns app.config $ :require ("\"mobile-detect" :default mobile-detect)
       :defs $ {}
         |dev? $ quote
           def dev? $ = "\"dev" (get-env "\"mode")
         |site $ quote
           def site $ {} (:dev-ui "\"http://localhost:8100/main.css") (:release-ui "\"http://cdn.tiye.me/favored-fonts/main.css") (:cdn-url "\"http://cdn.tiye.me/phlox/") (:title "\"Phlox") (:icon "\"http://cdn.tiye.me/logo/quamolit.png") (:storage-key "\"phlox")
+        |mobile? $ quote
+          def mobile? $ .!mobile (new mobile-detect js/window.navigator.userAgent)
