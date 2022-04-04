@@ -58,7 +58,7 @@
           app.config :refer $ dev? mobile?
           "\"nanoid" :refer $ nanoid
           app.updater :refer $ updater
-          "\"fontfaceobserver-es" :as FontFaceObserver
+          "\"fontfaceobserver-es" :default FontFaceObserver
           "\"./calcit.build-errors" :default build-errors
           "\"bottom-tip" :default hud!
           touch-control.core :refer $ render-control! start-control-loop! replace-control-loop!
@@ -69,7 +69,7 @@
         |main! $ quote
           defn main! () (; js/console.log PIXI)
             if dev? $ load-console-formatter!
-            -> (new FontFaceObserver/default "\"Josefin Sans") (.!load)
+            -> (new FontFaceObserver "\"Josefin Sans") (.!load)
               .!then $ fn (event) (render-app!)
             add-watch *store :change $ fn (store prev) (render-app!)
             when mobile? (render-control!) (start-control-loop! 8 on-control-event)
