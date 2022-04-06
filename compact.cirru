@@ -52,10 +52,10 @@
     |app.main $ {}
       :ns $ quote
         ns app.main $ :require ("\"pixi.js" :as PIXI)
-          phlox.core :refer $ render! clear-phlox-caches! update-viewer!
+          phlox.core :refer $ render! clear-phlox-caches! update-viewer! on-control-event
           app.comp.container :refer $ comp-container
           app.schema :as schema
-          app.config :refer $ dev? mobile?
+          phlox.config :refer $ dev? mobile?
           "\"nanoid" :refer $ nanoid
           app.updater :refer $ updater
           "\"fontfaceobserver-es" :default FontFaceObserver
@@ -92,19 +92,9 @@
               when mobile? (replace-control-loop! 8 on-control-event) (render-control!)
               hud! "\"ok~" "\"Ok"
             hud! "\"error" build-errors
-        |on-control-event $ quote
-          defn on-control-event (elapsed states delta)
-            let
-                move $ :left-move states
-                scales $ :right-move delta
-              update-viewer! move $ nth scales 1
     |app.config $ {}
       :ns $ quote
         ns app.config $ :require ("\"mobile-detect" :default mobile-detect)
       :defs $ {}
-        |dev? $ quote
-          def dev? $ = "\"dev" (get-env "\"mode")
         |site $ quote
           def site $ {} (:dev-ui "\"http://localhost:8100/main.css") (:release-ui "\"http://cdn.tiye.me/favored-fonts/main.css") (:cdn-url "\"http://cdn.tiye.me/phlox/") (:title "\"Phlox") (:icon "\"http://cdn.tiye.me/logo/quamolit.png") (:storage-key "\"phlox")
-        |mobile? $ quote
-          def mobile? $ .!mobile (new mobile-detect js/window.navigator.userAgent)
