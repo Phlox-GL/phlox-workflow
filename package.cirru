@@ -5,5 +5,5 @@
     |calcit-lang/memof |main
     |Respo/respo.calcit |main
     |Respo/respo-ui.calcit |main
-    |Phlox-GL/phlox |0.4.47
+    |Phlox-GL/phlox |main
     |Quatrefoil-GL/touch-control |main
