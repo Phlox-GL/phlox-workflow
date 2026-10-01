@@ -13,10 +13,12 @@ dependencies; unused Respo/UI/memof/lilac imports have been removed.
 caps --ci
 yarn install --immutable
 caps verify --toolchain
-calcit calcit.cirru js
-cp assets/*.mjs js-out/
-yarn vite
+yarn dev
 ```
+
+`yarn build` compiles the default JS browser entry, copies the existing host
+adapter and builds once. `yarn dev` compiles initially and starts Vite; for live
+Calcit edits, run `calcit calcit.cirru -w` in another terminal.
 
 The small font-loading adapter retains render-after-font-load behavior.
 CI checks strict entry types and all app public definitions before codegen/build;
@@ -25,10 +27,12 @@ there are no duplicated diagnostic or upload verification scripts.
 ### Deployment
 
 Main frontend builds use `https://cos-sh.tiye.me/Phlox-GL/phlox-workflow/`.
-COS action v1.1.1 uploads `dist` and verifies via `public-base-url`.
+Released COS action v1.2.0 uploads `dist`, validates HTML references and publicly
+verifies via `public-base-url`, without an extra verification script.
 The original server source/destination are unchanged and deploy only on main.
-PR builds use a PR/run-specific CDN base but do not receive deployment secrets or
+PR builds use `pr/<number>/<run-id>/<attempt>/` but do not receive deployment secrets or
 upload; enable previews only after protected preview credentials are configured.
+Runs queue per PR and separately for production, without cancelling uploads.
 
 ### Workflow
 
