@@ -78,11 +78,12 @@
             :args $ []
             :features $ #{} :js-ffi
         'render-app! $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn render-app! (? arg)
-            render! (comp-container @*store) dispatch! $ or arg $ {}
+          :code $ quote $ defn render-app! ()
+            render! (comp-container @*store) dispatch! $ {}
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
+            :features $ #{} :js-ffi
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.main
           :require
