@@ -1,16 +1,18 @@
 {
   "version": "0.4.10",
+  "packageManager": "yarn@4.18.0",
   "dependencies": {
-    "@calcit/procs": "^0.8.14",
+    "@calcit/procs": "0.27.0",
     "@quamolit/phlox-utils": "^0.0.2",
-    "@triadica/touch-control": "^0.0.4-a1",
+    "@quamolit/touch-control": "^0.0.13",
     "bottom-tip": "^0.1.5",
     "fontfaceobserver-es": "^3.3.3",
+    "hsluv": "^1.0.1",
     "nanoid": "^5.0.4",
     "pixi.js": "7.3.2"
   },
   "devDependencies": {
     "mobile-detect": "^1.4.5",
-    "vite": "^5.0.7"
+    "vite": "^8.3.1"
   }
 }
