@@ -21,7 +21,7 @@
             :args $ [] $ :: 'Map 'Tag 'Dynamic
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.comp.container
-          :require $ phlox.core :refer $ [] hslx text container
+          :require $ phlox.core :refer $ hslx text container
     'app.config $ %{} 'FileEntry
       :defs $ {} $ 'site
         %{} 'CodeEntry (:doc |)
@@ -34,7 +34,7 @@
     'app.main $ %{} 'FileEntry
       :defs $ {}
         '*store $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defatom *store schema/store
+          :code $ quote $ defref *store schema/store
           :examples $ []
           :schema $ :: 'Ref $ :: 'Map 'Tag 'Dynamic
         'dispatch! $ %{} 'CodeEntry (:doc |)
@@ -48,6 +48,7 @@
                 op-id $ decode-map-as (nanoid) 'String
                 op-time $ decode-map-as (js/Date.now) 'Number
               reset! *store $ updater @*store op op-id op-time
+            , &unit
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ [] 'Enum
@@ -56,7 +57,7 @@
           :code $ quote $ defn main! () (; js/console.log PIXI)
             if dev? $ load-console-formatter!
             onFontReady "|Josefin Sans" $ fn () $ render-app!
-            add-watch *store :change $ fn (store prev) (render-app!)
+            add-watch! *store :change $ fn (store prev) (render-app!)
             render-control!
             start-control-loop! 8 on-control-event
             println "|App Started"
@@ -67,12 +68,13 @@
         'reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn reload! ()
             if (nil? build-errors)
-              do (clear-phlox-caches!) (remove-watch *store :change)
-                add-watch *store :change $ fn (store prev) (render-app!)
+              do (clear-phlox-caches!) (remove-watch! *store :change)
+                add-watch! *store :change $ fn (store prev) (render-app!)
                 render-app!
                 replace-control-loop! 8 on-control-event
                 hud! |ok~ |Ok
               hud! |error build-errors
+            , &unit
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
@@ -87,16 +89,16 @@
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.main
           :require
-            phlox.core :refer $ [] render! clear-phlox-caches! on-control-event
-            app.comp.container :refer $ [] comp-container
+            phlox.core :refer $ render! clear-phlox-caches! on-control-event
+            app.comp.container :refer $ comp-container
             app.schema :as schema
-            phlox.config :refer $ [] dev?
-            |nanoid :refer $ [] nanoid
-            app.updater :refer $ [] updater
-            |./font-ready.mjs :refer $ [] onFontReady
+            phlox.config :refer $ dev?
+            |nanoid :refer $ nanoid
+            app.updater :refer $ updater
+            |./font-ready.mjs :refer $ onFontReady
             |./calcit.build-errors :default build-errors
             |bottom-tip :default hud!
-            touch-control.core :refer $ [] render-control! start-control-loop! replace-control-loop!
+            touch-control.core :refer $ render-control! start-control-loop! replace-control-loop!
     'app.schema $ %{} 'FileEntry
       :defs $ {} $ 'store
         %{} 'CodeEntry (:doc |)
@@ -134,7 +136,10 @@
                     :args $ [] 'Dynamic
                     :return 'Number
                   inc $ decode-map-as value 'Number
-              (:states cursor s) (update-states store cursor s)
+              (:states cursor s)
+                update-states store
+                  decode-map-as cursor $ :: 'List 'Dynamic
+                  , s
               (:hydrate-storage d)
                 decode-map-as d $ :: 'Map 'Tag 'Dynamic
               _ $ do (eprintln "|unknown op" op) store
@@ -144,4 +149,4 @@
             :return $ :: 'Map 'Tag 'Dynamic
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.updater
-          :require $ phlox.cursor :refer $ [] update-states
+          :require $ phlox.cursor :refer $ update-states
