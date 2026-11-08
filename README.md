@@ -4,7 +4,7 @@ Phlox workflow in [Calcit](https://calcit-lang.org/)
 
 ### Usage
 
-使用者注意：CLI 与 `@calcit/procs` 配对使用正式 **0.37.0**。
+使用者注意：CLI 与 `@calcit/procs` 配对使用正式 **0.38.0**。
 升级后重新安装依赖并构建。使用已发布 Phlox 0.9.3 和 Touch Control 0.0.39，
 Demo、字体加载后渲染的顺序和页面 `hud!` 提示沿用原行为。
 
