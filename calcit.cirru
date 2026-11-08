@@ -17,7 +17,7 @@
                 :position $ [] 100 100
                 :style $ {} $ :fill (hslx 0 0 80)
           :examples $ []
-          :schema $ quote $ Fn (Map Tag Dynamic) (-> phlox.schema/PhloxElement)
+          :schema $ quote $ Fn app.schema/Store (-> phlox.schema/PhloxElement)
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.comp.container
           :require $ phlox.core :refer $ hslx text container
@@ -35,7 +35,7 @@
         '*store $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defref *store schema/store
           :examples $ []
-          :schema $ quote $ Ref (Map Tag Dynamic)
+          :schema $ quote $ Ref app.schema/Store
         'dispatch! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn dispatch! (op)
             when
@@ -49,7 +49,15 @@
               reset! *store $ updater @*store op op-id op-time
             , &unit
           :examples $ []
-          :schema $ quote $ Fn Enum (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn app.schema/Op (-> Unit) (:features :js-ffi)
+        'dispatch-event! $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defn dispatch-event! (event)
+            match (schema/decode-op event)
+              (:some op) (dispatch! op)
+              (:none) (eprintln "|unknown op" event)
+            , &unit
+          :examples $ []
+          :schema $ quote $ Fn AnyEnum (-> Unit) (:features :js-ffi) (:open :decode)
         'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn main! () (; js/console.log PIXI)
             if dev? $ load-console-formatter!
@@ -74,7 +82,7 @@
           :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
         'render-app! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn render-app! ()
-            render! (comp-container @*store) dispatch! $ {}
+            render! (comp-container @*store) dispatch-event! $ {}
           :examples $ []
           :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
       :ns $ %{} 'NsEntry (:doc |)
@@ -91,46 +99,70 @@
             |bottom-tip :default hud!
             touch-control.core :refer $ render-control! start-control-loop! replace-control-loop!
     'app.schema $ %{} 'FileEntry
-      :defs $ {} $ 'store
-        %{} 'CodeEntry (:doc |)
-          :code $ quote $ def store
-            {} (:tab :drafts) (:x 0) (:keyboard-on? false) (:counted 0)
-              :states $ {}
-              :cursor $ []
+      :defs $ {}
+        'Op $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defenum Op (:add-x) (:tab Tag) (:toggle-keyboard) (:counted)
+            :states (List Dynamic) Dynamic
+            :hydrate-storage app.schema/Store
           :examples $ []
-          :schema $ quote $ Map Tag Dynamic
+          :schema $ quote EnumDef
+        'Store $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defstruct Store (:tab Tag) (:x Number) (:keyboard-on? Bool) (:counted Number)
+            :states $ Map Dynamic Dynamic
+            :cursor $ List Dynamic
+          :examples $ []
+          :schema $ quote StructDef
+        'decode-op $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defn decode-op (event)
+            match event
+              (:add-x)
+                Option :some $ Op :add-x
+              (:tab tab)
+                Option :some $ Op :tab $ decode-map-as tab Tag
+              (:toggle-keyboard)
+                Option :some $ Op :toggle-keyboard
+              (:counted)
+                Option :some $ Op :counted
+              (:states cursor data)
+                Option :some $ Op :states
+                  decode-map-as cursor $ List Dynamic
+                  , data
+              (:hydrate-storage data)
+                Option :some $ Op :hydrate-storage $ decode-map-as
+                  if (struct? data) (&struct:to-map data) data
+                  , Store
+              _ $ Option :none
+          :examples $ []
+          :schema $ quote $ Fn AnyEnum
+            -> $ Option app.schema/Op
+            :open :decode
+        'store $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ def store
+            Store :tab :drafts :x 0 :keyboard-on? false :counted 0 :states ({}) :cursor $ []
+          :examples $ []
+          :schema $ quote app.schema/Store
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.schema
     'app.updater $ %{} 'FileEntry
       :defs $ {} $ 'updater
         %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn updater (store op op-id op-time)
+          :code $ quote $ defn updater (store op _op-id _op-time)
             match op
               (:add-x)
-                update store :x $ fn (raw-x)
-                  hint-fn $ Fn Dynamic $ -> Number
-                  let
-                      x $ decode-map-as raw-x 'Number
-                    if (> x 10) 0 $ + x 1
-              (:tab t) (assoc store :tab t)
+                let
+                    x $ :x store
+                  assoc store :x $ if (> x 10) 0 $ + x 1
+              (:tab tab) (assoc store :tab tab)
               (:toggle-keyboard)
-                update store :keyboard-on? $ fn (value)
-                  hint-fn $ Fn Dynamic $ -> Bool
-                  not $ decode-map-as value 'Bool
+                assoc store :keyboard-on? $ not $ :keyboard-on? store
               (:counted)
-                update store :counted $ fn (value)
-                  hint-fn $ Fn Dynamic $ -> Number
-                  inc $ decode-map-as value 'Number
-              (:states cursor s)
-                update-states store
-                  decode-map-as cursor $ :: 'List 'Dynamic
-                  , s
-              (:hydrate-storage d)
-                decode-map-as d $ :: 'Map 'Tag 'Dynamic
-              _ $ do (eprintln "|unknown op" op) store
+                assoc store :counted $ inc $ :counted store
+              (:states cursor data)
+                assoc store :states $ decode-map-as
+                  assoc-in (:states store) (conj cursor :data) data
+                  Map Dynamic Dynamic
+              (:hydrate-storage stored) stored
           :examples $ []
-          :schema $ quote $ Fn (Map Tag Dynamic) Enum String Number
-            -> $ Map Tag Dynamic
+          :schema $ quote $ Fn app.schema/Store app.schema/Op String Number (-> app.schema/Store)
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.updater
-          :require $ phlox.cursor :refer $ update-states

@@ -4,12 +4,12 @@ Phlox workflow in [Calcit](https://calcit-lang.org/)
 
 ### Usage
 
-使用者注意：CLI 与 `@calcit/procs` 必须精确配对正式 **0.32.1**。
-使用已发布 Phlox 0.8.0 / touch-control 0.0.35（传递 JS FFI 0.2.9 与 Pointed Prompt 0.0.24），
-保留原 Demo、状态 Map、字体加载后的渲染顺序及生产部署路径。
-开放 `:states` 操作在使用处检查 cursor，不再依靠伪断言；已有真实 Dynamic 边界不隐瞒。
-Pixi 仍使用 7.x，更新至 7.4.3；其 `@pixi/assets` 已修复旧版本的 utils peer 元数据要求。
-原有 `hud!` 页面报错/成功提示保持不变，不用 `raise` 替代。
+使用者注意：CLI 与 `@calcit/procs` 配对使用正式 **0.37.0**。
+升级后重新安装依赖并构建。使用已发布 Phlox 0.9.3 和 Touch Control 0.0.39，
+Demo、字体加载后渲染的顺序和页面 `hud!` 提示沿用原行为。
+
+派生应用可从具名 `Store` 和 `Op` 扩展业务字段与操作。原状态 Map 可在恢复入口解码为 `Store`；
+Phlox 传入的异构组件状态和游标仍在开放边界处理。Pixi 保持 7.x。
 
 Use Caps 0.1.1, Node.js 24 and Yarn 4.18.0.
 `calcit.cirru` and `deps.cirru` are canonical; compact/package snapshots are retired.
@@ -32,20 +32,10 @@ CI resolves the published dependency graph in strict mode and checks full strict
 all definitions and the original five public namespaces before codegen/build;
 there are no duplicated diagnostic or upload verification scripts.
 
-### 0.32.1 迁移验收
+### 模板验收
 
-这是用于派生应用的起步模板，不作为业务功能模块单独发版。
-官方 formatter 转换 3 处旧类型表达式，9 个定义的 schema 与原附带元数据不变；
-只更新工具链、已发布依赖和锁文件，不改变 Demo、字体加载后的渲染顺序或 HUD。
-Caps strict 从正式 tag 安装四模块图、工具链配对、187 个全定义、五个命名空间的
-9 个公开定义、完整 strict（diagnostics 为空）、不可变安装和构建通过。
-项目没有 definition-attached tests，不将发现 0 项算作业务回归成功。
-现有 5 处 Dynamic 边界保留，不通过放宽门禁掩盖。
-
-实际隔离页面确认 DEMO 与触控控件绘制、拖动后刷新启动，无 console warning/error；
-不扩大为完整视觉或真实移动设备验收，仍保留 Phlox #71 的历史可见性风险。
-Yarn 包年龄门禁设为一小时，删除失效的 0.27.0 procs 白名单，不新增逐版本例外。
-原 PR 只保存相对路径构建 artifact，不新增 COS 上传或生产部署。
+这是派生应用的起步模板。项目没有附带测试，CI 通过原类型和构建门禁验证模板。
+Yarn 保留一小时包年龄门禁。PR 保存相对路径构建 artifact。
 
 ### Deployment
 
