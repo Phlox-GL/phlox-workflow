@@ -4,9 +4,10 @@ Phlox workflow in [Calcit](https://calcit-lang.org/)
 
 ### Usage
 
-使用者注意：CLI 与 `@calcit/procs` 配对使用正式 **0.40.0**。
+使用者注意：CLI 与 `@calcit/procs` 配对使用正式 **0.41.0**。
 升级后重新安装依赖并构建。使用已发布 Phlox 0.9.3 和 Touch Control 0.0.39，
 Demo、字体加载后渲染的顺序和页面 `hud!` 提示沿用原行为。
+状态树根键沿用 CursorKey union，接受 Tag、字符串和数字，载荷仍由应用定义。
 
 派生应用从具名 `Store` 和 `Op` 扩展业务字段与操作。渲染入口直接接收具名操作，`CursorKey` 允许 Tag、String 和 Number。接入发出匿名状态事件的旧 Phlox 控件时，在入口校验游标和控件所需字段，再构造 `Op :states`。恢复外部存档时先解码为 `Store`，再构造 `Op :hydrate-storage`。Pixi 保持 7.x。
 
