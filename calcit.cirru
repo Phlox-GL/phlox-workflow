@@ -50,14 +50,6 @@
             , &unit
           :examples $ []
           :schema $ quote $ Fn app.schema/Op (-> Unit) (:features :js-ffi)
-        'dispatch-event! $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn dispatch-event! (event)
-            match (schema/decode-op event)
-              (:some op) (dispatch! op)
-              (:none) (eprintln "|unknown op" event)
-            , &unit
-          :examples $ []
-          :schema $ quote $ Fn AnyEnum (-> Unit) (:features :js-ffi) (:open :decode)
         'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn main! () (; js/console.log PIXI)
             if dev? $ load-console-formatter!
@@ -82,7 +74,7 @@
           :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
         'render-app! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn render-app! ()
-            render! (comp-container @*store) dispatch-event! $ {}
+            render! (comp-container @*store) dispatch! $ {}
           :examples $ []
           :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
       :ns $ %{} 'NsEntry (:doc |)
@@ -100,42 +92,22 @@
             touch-control.core :refer $ render-control! start-control-loop! replace-control-loop!
     'app.schema $ %{} 'FileEntry
       :defs $ {}
+        'CursorKey $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defunion CursorKey Tag String Number
+          :examples $ []
+          :schema $ quote UnionDef
         'Op $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defenum Op (:add-x) (:tab Tag) (:toggle-keyboard) (:counted)
-            :states (List Dynamic) Dynamic
+            :states (List app.schema/CursorKey) Dynamic
             :hydrate-storage app.schema/Store
           :examples $ []
           :schema $ quote EnumDef
         'Store $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defstruct Store (:tab Tag) (:x Number) (:keyboard-on? Bool) (:counted Number)
             :states $ Map Dynamic Dynamic
-            :cursor $ List Dynamic
+            :cursor $ List app.schema/CursorKey
           :examples $ []
           :schema $ quote StructDef
-        'decode-op $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn decode-op (event)
-            match event
-              (:add-x)
-                Option :some $ Op :add-x
-              (:tab tab)
-                Option :some $ Op :tab $ decode-map-as tab Tag
-              (:toggle-keyboard)
-                Option :some $ Op :toggle-keyboard
-              (:counted)
-                Option :some $ Op :counted
-              (:states cursor data)
-                Option :some $ Op :states
-                  decode-map-as cursor $ List Dynamic
-                  , data
-              (:hydrate-storage data)
-                Option :some $ Op :hydrate-storage $ decode-map-as
-                  if (struct? data) (&struct:to-map data) data
-                  , Store
-              _ $ Option :none
-          :examples $ []
-          :schema $ quote $ Fn AnyEnum
-            -> $ Option app.schema/Op
-            :open :decode
         'store $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def store
             Store :tab :drafts :x 0 :keyboard-on? false :counted 0 :states ({}) :cursor $ []

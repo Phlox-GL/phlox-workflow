@@ -4,12 +4,11 @@ Phlox workflow in [Calcit](https://calcit-lang.org/)
 
 ### Usage
 
-使用者注意：CLI 与 `@calcit/procs` 配对使用正式 **0.38.0**。
+使用者注意：CLI 与 `@calcit/procs` 配对使用正式 **0.40.0**。
 升级后重新安装依赖并构建。使用已发布 Phlox 0.9.3 和 Touch Control 0.0.39，
 Demo、字体加载后渲染的顺序和页面 `hud!` 提示沿用原行为。
 
-派生应用可从具名 `Store` 和 `Op` 扩展业务字段与操作。原状态 Map 可在恢复入口解码为 `Store`；
-Phlox 传入的异构组件状态和游标仍在开放边界处理。Pixi 保持 7.x。
+派生应用从具名 `Store` 和 `Op` 扩展业务字段与操作。渲染入口直接接收具名操作，`CursorKey` 允许 Tag、String 和 Number。接入发出匿名状态事件的旧 Phlox 控件时，在入口校验游标和控件所需字段，再构造 `Op :states`。恢复外部存档时先解码为 `Store`，再构造 `Op :hydrate-storage`。Pixi 保持 7.x。
 
 Use Caps 0.1.1, Node.js 24 and Yarn 4.18.0.
 `calcit.cirru` and `deps.cirru` are canonical; compact/package snapshots are retired.
