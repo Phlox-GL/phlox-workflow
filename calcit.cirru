@@ -49,7 +49,7 @@
               reset! *store $ updater @*store op op-id op-time
             , &unit
           :examples $ []
-          :schema $ quote $ Fn schema/Op (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn schema/Op (-> Unit) (:features :js-ffi :state)
         'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn main! () (; js/console.log PIXI)
             if dev? $ load-console-formatter!
@@ -59,7 +59,7 @@
             start-control-loop! 8 on-control-event
             println "|App Started"
           :examples $ []
-          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn (-> Unit) (:features :io :js-ffi :state)
         'reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn reload! ()
             if (nil? build-errors)
@@ -71,12 +71,12 @@
               hud! |error build-errors
             , &unit
           :examples $ []
-          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn (-> Unit) (:features :js-ffi :state)
         'render-app! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn render-app! ()
             render! (comp-container @*store) dispatch! $ {}
           :examples $ []
-          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn (-> Unit) (:features :js-ffi :state)
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.main
           :require
@@ -98,13 +98,17 @@
           :schema $ quote UnionDef
         'Op $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defenum Op (:add-x) (:tab Tag) (:toggle-keyboard) (:counted)
-            :states (List app.schema/CursorKey) Dynamic
+            :states (List app.schema/CursorKey) StateValue
             :hydrate-storage app.schema/Store
           :examples $ []
           :schema $ quote EnumDef
+        'StateValue $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defunion StateValue Bool Number String Tag (List StateValue) (Map CursorKey StateValue)
+          :examples $ []
+          :schema $ quote UnionDef
         'Store $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defstruct Store (:tab Tag) (:x Number) (:keyboard-on? Bool) (:counted Number)
-            :states $ Map app.schema/CursorKey Dynamic
+            :states $ Map app.schema/CursorKey app.schema/StateValue
             :cursor $ List app.schema/CursorKey
           :examples $ []
           :schema $ quote StructDef
@@ -132,7 +136,7 @@
               (:states cursor data)
                 assoc store :states $ decode-map-as
                   assoc-in (:states store) (conj cursor :data) data
-                  Map app.schema/CursorKey Dynamic
+                  Map app.schema/CursorKey app.schema/StateValue
               (:hydrate-storage stored) stored
           :examples $ []
           :schema $ quote $ Fn app.schema/Store app.schema/Op String Number (-> app.schema/Store)
