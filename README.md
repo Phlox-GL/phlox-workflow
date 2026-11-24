@@ -4,14 +4,14 @@ Phlox workflow in [Calcit](https://calcit-lang.org/)
 
 ### Usage
 
-使用者注意：CLI 与 `@calcit/procs` 配对使用正式 **0.44.0**。
-升级后重新安装依赖并构建。使用已发布 Phlox 0.9.9 和 Touch Control 0.0.43，
+使用者注意：CLI 与 `@calcit/procs` 配对使用正式 **0.45.0**。
+升级后重新安装依赖并构建。使用已发布 Phlox 0.12.1 和 Touch Control 0.0.44，
 Demo、字体加载后渲染的顺序和页面 `hud!` 提示沿用原行为。
-状态树键沿用 CursorKey union，接受 Tag、字符串和数字。StateValue 默认接受布尔值、数字、字符串、Tag、递归列表和 Map。派生应用如需保存具名记录，可在 StateValue 中添加具体记录类型。
+Phlox 的布尔属性要求 Bool，非布尔值应改为 true / false。状态树键沿用 CursorKey union，接受 Tag、字符串和数字。StateValue 默认接受布尔值、数字、字符串、Tag、递归列表和 Map。派生应用如需保存具名记录，可在 StateValue 中添加具体记录类型。
 
 派生应用从具名 `Store` 和 `Op` 扩展业务字段与操作。渲染入口直接接收具名操作，`CursorKey` 允许 Tag、String 和 Number。接入发出匿名状态事件的旧 Phlox 控件时，在入口校验游标和控件所需字段，再构造 `Op :states`。恢复外部存档时先解码为 `Store`，再构造 `Op :hydrate-storage`。Pixi 保持 7.x。
 
-Use Caps 0.1.1, Node.js 24 and Yarn 4.18.0.
+Use Caps 0.1.2, Node.js 24 and Yarn 4.18.0.
 `calcit.cirru` and `deps.cirru` are canonical; compact/package snapshots are retired.
 Edit source through the Calcit CLI. Only Phlox and touch-control are direct Calcit
 dependencies; unused Respo/UI/memof/lilac imports have been removed.
