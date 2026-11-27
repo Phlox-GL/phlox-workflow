@@ -4,8 +4,8 @@ Phlox workflow in [Calcit](https://calcit-lang.org/)
 
 ### Usage
 
-使用者注意：CLI 与 `@calcit/procs` 配对使用正式 **0.45.1**。
-升级后重新安装依赖并构建。使用已发布 Phlox 0.12.2 和 Touch Control 0.0.45，
+使用者注意：CLI 与 `@calcit/procs` 配对使用正式 **0.46.0**。
+升级后重新安装依赖并构建。使用已发布 Phlox 0.13.1 和 Touch Control 0.0.47，
 Demo、字体加载后渲染的顺序和页面 `hud!` 提示沿用原行为。
 Phlox 的布尔属性要求 Bool，非布尔值应改为 true / false。状态树键沿用 CursorKey union，接受 Tag、字符串和数字。StateValue 默认接受布尔值、数字、字符串、Tag、递归列表和 Map。派生应用如需保存具名记录，可在 StateValue 中添加具体记录类型。
 
