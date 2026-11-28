@@ -62,7 +62,7 @@
           :schema $ quote $ Fn (-> Unit) (:features :io :js-ffi :state)
         'reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn reload! ()
-            if (nil? build-errors)
+            if (js-nullish? build-errors)
               do (clear-phlox-caches!) (remove-watch! *store :change)
                 add-watch! *store :change $ fn (store prev) (render-app!)
                 render-app!
